@@ -38,7 +38,7 @@ public class SimpleSSLServer implements Runnable {
         try {
             createSSLServerSocketFactory();
             final SSLServerSocket sslServerSocket = (SSLServerSocket) factory.createServerSocket(sslPort);
-            ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(300);
+            ThreadPoolExecutor executorService = new ThreadPoolExecutor(300,300,0L,TimeUnit.MILLISECONDS,new ArrayBlockingQueue<Runnable>(1000));
             while (true) {
                 SSLSocket socket = (SSLSocket) sslServerSocket.accept();
                 socket.setNeedClientAuth(true);
@@ -113,7 +113,7 @@ public class SimpleSSLServer implements Runnable {
             public void run() {
 
                 try {
-                    int sleepTime = (int)(Math.random()*10000)+100;
+                    int sleepTime = (int)(Math.random()*10000)+1000;
                     TimeUnit.MILLISECONDS.sleep(sleepTime);
                     System.out.println("sending msg client: " + msg + " client after "+sleepTime+"ms");
                     writer.println("hello client it you msg: " + msg);
